@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 import sklearn
-from src.model.ClassificationModel_mult import ClassificationModelMult
+from model.ClassificationModel_mult import ClassificationModelMult
 import torch.nn.functional as F
 import torch
 from simpletransformers.model import ClassificationModel

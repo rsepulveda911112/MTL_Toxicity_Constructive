@@ -1,8 +1,8 @@
 import argparse
-from src.common.load_data import load_data_mul, load_data
+from common.load_data import load_data_mul, load_data
 import os
-from src.common.score import cal_score
-from src.model.model_mul import SequenceModel
+from common.score import cal_score
+from model.model_mul import SequenceModel
 from sklearn.model_selection import train_test_split
 
 
@@ -27,7 +27,7 @@ def exec_model(model_type, model_name, model_dir, training_set, test_set, eval_s
                wandb_project, is_sweeping, best_result_config):
     if model_dir == '':
         df_train, _ = load_data_mul(os.getcwd() + training_set, False, ['CONST', 'TOXICIDAD'])
-        df_train = df_train[0:100]
+        #df_train = df_train[0:100]
         model = SequenceModel(model_type, model_name, use_cuda, None, [2,4], wandb_project,
                             is_sweeping, is_evaluate, best_result_config, True, len(df_train['features'][0]))
         df_eval = None
@@ -46,7 +46,7 @@ def exec_model(model_type, model_name, model_dir, training_set, test_set, eval_s
         ###### Predict test set ########
         df_test, _ = load_data_mul(os.getcwd() + test_set, False, [label])
         df_test.rename(columns={label: 'labels'}, inplace=True)
-        df_test = df_test[0:10]
+        #df_test = df_test[0:10]
         y_predict, _ = model.predict(df_test, task_id=index)
         cal_score(df_test, y_predict)
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
                         help="This parameter is the relative dir of eval set.")
 
     parser.add_argument("--use_cuda",
-                        default=False,
+                        default=True,
                         action='store_true',
                         help="This parameter should be True if cuda is present.")
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
                         help="This parameter is the relative dir of model for predict.")
 
     parser.add_argument("--model_type",
-                        default="rembert",
+                        default="roberta",
                         type=str,
                         help="This parameter is the relative type of model to trian and predict.")
 

@@ -129,8 +129,8 @@ from simpletransformers.config.model_args import ClassificationArgs
 from simpletransformers.config.utils import sweep_config_to_sweep_values
 from simpletransformers.losses.loss_utils import init_loss
 
-from src.model.classification_utils import convert_examples_to_features, ClassificationDataset
-from src.model.transformer_model.RembertForSequenceClassification_multi import RemBertForSequenceClassificationMult
+from model.classification_utils import convert_examples_to_features, ClassificationDataset
+from model.transformer_model.RembertForSequenceClassification_multi import RemBertForSequenceClassificationMult
 
 try:
     import wandb
