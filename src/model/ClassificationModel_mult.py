@@ -131,6 +131,7 @@ from simpletransformers.losses.loss_utils import init_loss
 
 from model.classification_utils import convert_examples_to_features, ClassificationDataset
 from model.transformer_model.RembertForSequenceClassification_multi import RemBertForSequenceClassificationMult
+from model.transformer_model.RobertaForSequenceClassification_multi import RobertaForSequenceClassificationMult
 
 try:
     import wandb
@@ -280,7 +281,7 @@ class ClassificationModelMult:
             ),
             "roberta": (
                 RobertaConfig,
-                RobertaForSequenceClassification,
+                RobertaForSequenceClassificationMult,
                 RobertaTokenizerFast,
             ),
             "squeezebert": (
@@ -2002,7 +2003,7 @@ class ClassificationModelMult:
 
         mcc = matthews_corrcoef(labels, preds)
         if task_id is not None:
-            num_labels = getattr(self.model, f"num_labels_{task_id}")
+            num_labels = self.labels_list[task_id]
         else:
             num_labels = self.model.num_labels
         if num_labels == 2:

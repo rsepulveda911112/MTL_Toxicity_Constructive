@@ -27,7 +27,7 @@ def exec_model(model_type, model_name, model_dir, training_set, test_set, eval_s
                wandb_project, is_sweeping, best_result_config):
     if model_dir == '':
         df_train, _ = load_data_mul(os.getcwd() + training_set, False, ['CONST', 'TOXICIDAD'])
-        #df_train = df_train[0:100]
+        #df_train = df_train[0:20]
         model = SequenceModel(model_type, model_name, use_cuda, None, [2,4], wandb_project,
                             is_sweeping, is_evaluate, best_result_config, True, len(df_train['features'][0]))
         df_eval = None

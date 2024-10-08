@@ -102,12 +102,9 @@ class RobertaForSequenceClassificationMult(RobertaPreTrainedModel):
     def __init__(self, config, value_head, labels_list):
         super().__init__(config)
         self.config = config
-        if self.value_head != None:
-            print(value_head)
-            self.denseFeature1 = nn.Linear(value_head, config.hidden_size)
 
         self.roberta = RobertaModel(config, add_pooling_layer=False)
-        self.classifier = RobertaClassificationHead(config, labels_list)
+        self.classifier = RobertaClassificationHead(config, labels_list, value_head)
 
         # Initialize weights and apply final processing
         self.post_init()
@@ -209,9 +206,12 @@ class RobertaForSequenceClassificationMult(RobertaPreTrainedModel):
 class RobertaClassificationHead(nn.Module):
     """Head for sentence-level classification tasks."""
 
-    def __init__(self, config, labels_list):
+    def __init__(self, config, labels_list, value_head):
         super().__init__()
+        self.value_head = value_head
         self.dense = nn.Linear(config.hidden_size, config.hidden_size)
+        if value_head != 0:
+            self.denseFeature1 = nn.Linear(value_head, (value_head * 100))
         classifier_dropout = (
             config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
         )
@@ -226,6 +226,9 @@ class RobertaClassificationHead(nn.Module):
         x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
         x = self.dropout(x)
         x = self.dense(x)
+        if self.value_head != 0:
+            x1 = kwargs.pop("externalFeatures", None)
+            x = torch.cat((x, x1), dim=-1)
         x = torch.tanh(x)
         x = self.dropout(x)
         x = getattr(self, f"classifier_{task_id}")(x)
